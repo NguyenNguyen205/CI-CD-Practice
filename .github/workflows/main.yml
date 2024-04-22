@@ -17,7 +17,7 @@ jobs:
         working-directory: ./greenbattery
         run: |
           npm install
-          npm build
+          npm run-script build
 
       - name: Push file into s3 aws
         uses: zdurham/s3-upload-github-action@master
