@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build the app
-        working-directory: ../greenbattery
+        working-directory: greenbattery
         run: |
           npm install
           npm run build
