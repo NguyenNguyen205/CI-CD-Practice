@@ -95,7 +95,6 @@ export const fetchFrequency = async (interval) => {
   let baseUrl =
     "https://szm7509e7i.execute-api.ap-southeast-2.amazonaws.com/Prod/data";
   let requestUrl = `${baseUrl}?startTime=${strStartTime}&endTime=${strEndTime}`;
-  console.log(requestUrl);
   let result = await fetch(requestUrl);
   let response = await result.json();
 

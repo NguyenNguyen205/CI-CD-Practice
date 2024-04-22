@@ -8,14 +8,10 @@ function App() {
   const [freqData, setFreqData] = useState([]);
 
   useEffect(() => {
-    fetchPrice(interval)
-      .then((val) => setPriceData([...val]))
-      .then(() => console.log(priceData));
+    fetchPrice(interval).then((val) => setPriceData([...val]));
 
-    fetchFrequency(interval)
-      .then((val) => setFreqData([...val]))
-      .then(() => console.log(freqData));
-  }, [interval, freqData, priceData]);
+    fetchFrequency(interval).then((val) => setFreqData([...val]));
+  }, [interval]);
 
   const charts = [
     {

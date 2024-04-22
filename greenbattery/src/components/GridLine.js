@@ -26,7 +26,7 @@ const GridLine = ({
     gridGroup.select(".domain").remove();
     gridGroup.selectAll("text").remove();
     gridGroup.selectAll("line").attr("stroke", "rgba(255, 255, 255, 0.1)");
-  }, [scale, ticks, size, disableAnimation, type]);
+  }, [scale, ticks, size, disableAnimation]);
 
   return <g ref={ref} transform={transform} {...props} />;
 };

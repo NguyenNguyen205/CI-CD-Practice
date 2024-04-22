@@ -26,4 +26,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-southeast-2
       - name: Copy to s3
-        run: aws s3 cp ./greenbattery/build s3://testfrontendforgreenbattery --recursive
+        run: |
+          aws s3 cp ./greenbattery/build s3://testfrontendforgreenbattery --recursive
+          aws get-bucket-website --bucket testfrontendforgreenbattery
