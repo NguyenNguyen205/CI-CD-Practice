@@ -30,7 +30,7 @@ const Axis = ({
       .attr("opacity", 0.5)
       .attr("color", "white")
       .attr("font-size", "0.75rem");
-  }, [scale, ticks, tickFormat, disableAnimation]);
+  }, [scale, ticks, tickFormat, disableAnimation, type]);
 
   React.useEffect(() => {
     d3.select(anchorEl)
