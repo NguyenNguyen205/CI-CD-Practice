@@ -47,6 +47,8 @@ const useController = ({ data, width, height, chartType }) => {
         return `$${d3.format(".2")(d)}`;
       case "freq":
         return `${d3.format(".2")(d)}Hz`;
+      default:
+        return ``;
     }
   };
 
