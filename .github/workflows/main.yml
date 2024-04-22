@@ -1,13 +1,13 @@
 on:
   push:
     branches:
-      - "main"
+      - "firstProject"
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Build the app
-        working-directory: ./greenbatteryhackathon
+        working-directory: ./greenbattery
         run: |
           npm install
           npm run build
