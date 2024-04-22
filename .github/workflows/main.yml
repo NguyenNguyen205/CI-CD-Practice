@@ -7,10 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build the app
-        working-directory: greenbattery
+        # working-directory: greenbattery
         run: |
-          npm install
-          npm run build
+          ls -la
 
       - name: Push file into s3 aws
         uses: zdurham/s3-upload-github-action@master
