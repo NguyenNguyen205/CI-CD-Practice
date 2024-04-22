@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import * as d3 from "d3";
 import { MultiLineDataPropTypes } from "../utils/propTypes";
-import { formatPercent, formatTooltip } from "../utils/commonUtils";
+import { formatTooltip } from "../utils/commonUtils";
 
 const Tooltip = ({
   xScale,
@@ -34,7 +34,7 @@ const Tooltip = ({
         .attr("y1", -margin.top)
         .attr("y2", height);
     },
-    [ref, height, margin]
+    [ref, height, margin, parentId]
   );
 
   const drawContent = React.useCallback(
@@ -61,7 +61,7 @@ const Tooltip = ({
         .select(".contentTitle")
         .text(d3.timeFormat("%d %b %Y, %H:%M:%S")(xScale.invert(x)));
     },
-    [xScale, margin, width]
+    [xScale, margin, width, parentId]
   );
 
   const drawBackground = React.useCallback(() => {
@@ -93,37 +93,40 @@ const Tooltip = ({
     contentBackground
       .attr("width", contentSize.width + 8)
       .attr("height", contentSize.height + 4);
-  }, []);
+  }, [parentId]);
 
-  const onChangePosition = React.useCallback((d, i, isVisible) => {
-    d3.selectAll(`#${parentId} .performanceItemValue`)
-      .filter((td, tIndex) => tIndex === i)
-      .text(formatTooltip(d.value, chartType));
-    d3.selectAll(`#${parentId} .performanceItemMarketValue`)
-      .filter((td, tIndex) => tIndex === i)
-      .text(
-        d.marketvalue && !isVisible
-          ? "No data"
-          : formatTooltip(d.value, chartType)
+  const onChangePosition = React.useCallback(
+    (d, i, isVisible) => {
+      d3.selectAll(`#${parentId} .performanceItemValue`)
+        .filter((td, tIndex) => tIndex === i)
+        .text(formatTooltip(d.value, chartType));
+      d3.selectAll(`#${parentId} .performanceItemMarketValue`)
+        .filter((td, tIndex) => tIndex === i)
+        .text(
+          d.marketvalue && !isVisible
+            ? "No data"
+            : formatTooltip(d.value, chartType)
+        );
+
+      const maxNameWidth = d3.max(
+        d3.selectAll(`#${parentId} .performanceItemName`).nodes(),
+        (node) => node.getBoundingClientRect().width
+      );
+      d3.selectAll(`#${parentId} .performanceItemValue`).attr(
+        "transform",
+        (datum, index, nodes) =>
+          `translate(${
+            nodes[index].previousSibling.getBoundingClientRect().width + 14
+          },4)`
       );
 
-    const maxNameWidth = d3.max(
-      d3.selectAll(`#${parentId} .performanceItemName`).nodes(),
-      (node) => node.getBoundingClientRect().width
-    );
-    d3.selectAll(`#${parentId} .performanceItemValue`).attr(
-      "transform",
-      (datum, index, nodes) =>
-        `translate(${
-          nodes[index].previousSibling.getBoundingClientRect().width + 14
-        },4)`
-    );
-
-    d3.selectAll(`#${parentId} .performanceItemMarketValue`).attr(
-      "transform",
-      `translate(${maxNameWidth},4)`
-    );
-  }, []);
+      d3.selectAll(`#${parentId} .performanceItemMarketValue`).attr(
+        "transform",
+        `translate(${maxNameWidth},4)`
+      );
+    },
+    [parentId, chartType]
+  );
 
   const followPoints = React.useCallback(
     (e) => {
@@ -196,7 +199,6 @@ const Tooltip = ({
       drawBackground();
     },
     [
-      anchorEl,
       drawLine,
       drawContent,
       drawBackground,
@@ -204,6 +206,7 @@ const Tooltip = ({
       yScale,
       data,
       onChangePosition,
+      parentId,
     ]
   );
 
@@ -227,7 +230,7 @@ const Tooltip = ({
           .attr("opacity", 1);
         followPoints(e);
       });
-  }, [anchorEl, followPoints]);
+  }, [anchorEl, followPoints, parentId]);
 
   if (!data.length) return null;
 

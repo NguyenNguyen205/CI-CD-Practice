@@ -15,7 +15,7 @@ function App() {
     fetchFrequency(interval)
       .then((val) => setFreqData([...val]))
       .then(() => console.log(freqData));
-  }, [interval]);
+  }, [interval, freqData, priceData]);
 
   const charts = [
     {

@@ -56,7 +56,7 @@ export const getXTickFormat = (months) => {
 };
 
 export const fetchPrice = async (interval) => {
-  let endTime = new Date("2023-11-06 20:30:00"); // Change to get current date in production
+  let endTime = new Date("2024-04-13 20:40:00"); // Change to get current date in production
   let MS_PER_MINUTE = 60000;
   interval = parseInt(interval) * MS_PER_MINUTE; // Change from minutes to seconds
   let startTime = new Date(endTime - interval);
@@ -86,7 +86,7 @@ export const fetchPrice = async (interval) => {
 };
 
 export const fetchFrequency = async (interval) => {
-  let endTime = new Date("2023-11-06 20:30:00"); // Change to get current date in production
+  let endTime = new Date("2024-04-13 20:40:00"); // Change to get current date in production
   let MS_PER_MINUTE = 60000;
   interval = parseInt(interval) * MS_PER_MINUTE; // Change from minutes to seconds
   let startTime = new Date(endTime - interval);
@@ -95,6 +95,7 @@ export const fetchFrequency = async (interval) => {
   let baseUrl =
     "https://szm7509e7i.execute-api.ap-southeast-2.amazonaws.com/Prod/data";
   let requestUrl = `${baseUrl}?startTime=${strStartTime}&endTime=${strEndTime}`;
+  console.log(requestUrl);
   let result = await fetch(requestUrl);
   let response = await result.json();
 

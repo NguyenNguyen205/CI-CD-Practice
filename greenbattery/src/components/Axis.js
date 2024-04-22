@@ -30,7 +30,7 @@ const Axis = ({
       .attr("opacity", 0.5)
       .attr("color", "white")
       .attr("font-size", "0.75rem");
-  }, [scale, ticks, tickFormat, disableAnimation]);
+  }, [scale, ticks, tickFormat, disableAnimation, type]);
 
   React.useEffect(() => {
     d3.select(anchorEl)
@@ -64,7 +64,7 @@ Axis.propTypes = {
   tickFormat: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
   transform: PropTypes.string,
   disableAnimation: PropTypes.bool,
-  anchorEl: PropTypes.instanceOf(Element)
+  anchorEl: PropTypes.instanceOf(Element),
 };
 
 Axis.defaultProps = {
@@ -72,7 +72,7 @@ Axis.defaultProps = {
   tickFormat: null,
   transform: "",
   disableAnimation: false,
-  anchorEl: null
+  anchorEl: null,
 };
 
 export default Axis;
