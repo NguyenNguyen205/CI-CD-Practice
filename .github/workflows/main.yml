@@ -16,7 +16,7 @@ jobs:
       - name: Build the app
         working-directory: ./greenbattery
         run: |
-          npm install
+          npm ci
           npm run-script build
 
       - name: Push file into s3 aws
