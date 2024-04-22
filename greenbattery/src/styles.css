@@ -1,0 +1,68 @@
+  .MultiChart {
+    background-color: #1f2937;
+    border-radius: 10px;
+    margin: 10px 0;
+  }
+  
+  .axisX text {
+    text-anchor: start;
+  }
+  
+  .baseGridLine line {
+    stroke: rgba(255, 255, 255, 0.5);
+  }
+  
+  .tooltip text {
+    font-size: 12px;
+    fill: #ffffff;
+  }
+  
+  .tooltipLine {
+    stroke: #ff007a;
+    stroke-width: 1px;
+    stroke-dasharray: 5;
+  }
+  
+  .tooltipContent .contentTitle {
+    font-weight: bold;
+  }
+  
+  .tooltipLinePoint {
+    fill: #ff007a;
+  }
+  .tpRef:hover {
+    cursor: crosshair;
+  }
+  
+  .legendContainer {
+    display: flex;
+    justify-content: center;
+    color: #ffffff;
+  }
+  
+  .checkbox {
+    margin: 10px;
+  }
+  
+  .chart {
+    padding: 0;
+  }
+
+  
+  .interval {
+    background-color: #4fd1c5;
+    padding-left: .75rem;
+    padding-right: .75rem;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    border-radius: .375rem;
+    font-weight: bold;
+  }
+
+  .chartTitle {
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    color: #4fd1c5;
+
+  }

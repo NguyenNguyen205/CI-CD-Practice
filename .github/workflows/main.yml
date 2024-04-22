@@ -6,27 +6,19 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Build the app
-    - id: build-publish
-      working-directory: ./greenbatteryhackathon
-      run: |
-        npm install
-        npm run build
+      - name: Build the app
+        working-directory: ./greenbatteryhackathon
+        run: |
+          npm install
+          npm run build
 
-    - name: Push file into s3
-  # You may pin to the exact commit or the version.
-  # uses: TrueSparrowSystems/ghost-static-website-generator@773032afb0770ce3006a4c305cf3c15ee586095e
-
-      uses: zdurham/s3-upload-github-action@master
-      with:
-        args: --acl public-read
-      env:
-        FILE: ./greenbattery/build
-        AWS_REGION: 'ap-southeast-2'
-        S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-        S3_KEY: ${{ secrets.S3_KEY }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      
-          
-            
+      - name: Push file into s3W
+        uses: zdurham/s3-upload-github-action@master
+        with:
+          args: --acl public-read
+        env:
+          FILE: ./greenbattery/build
+          AWS_REGION: "ap-southeast-2"
+          S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
