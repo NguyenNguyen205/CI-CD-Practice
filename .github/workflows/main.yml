@@ -28,4 +28,4 @@ jobs:
       - name: Copy to s3
         run: |
           aws s3 cp ./greenbattery/build s3://testfrontendforgreenbattery --recursive
-          aws get-bucket-website --bucket testfrontendforgreenbattery
+          aws s3api get-bucket-website --bucket testfrontendforgreenbattery
