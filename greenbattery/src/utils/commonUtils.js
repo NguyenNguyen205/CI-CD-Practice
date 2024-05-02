@@ -58,35 +58,39 @@ export const getXTickFormat = (months) => {
 export const fetchPrice = async (interval) => {
   let endTime = new Date("2024-04-13 20:40:00"); // Change to get current date in production
   let MS_PER_MINUTE = 60000;
-  interval = parseInt(interval) * MS_PER_MINUTE; // Change from minutes to seconds
+  let MS_PER_HOUR = 3600000;
+  interval = parseInt(interval);
+  if (interval < 5) interval = interval * MS_PER_HOUR;
+  else interval = interval * MS_PER_MINUTE;
   let startTime = new Date(endTime - interval);
   let strEndTime = moment(endTime).format("YYYY-MM-DD k:mm:ss");
   let strStartTime = moment(startTime).format("YYYY-MM-DD k:mm:ss");
   let baseUrl =
     "https://szm7509e7i.execute-api.ap-southeast-2.amazonaws.com/Prod/data";
   let requestUrl = `${baseUrl}?startTime=${strStartTime}&endTime=${strEndTime}`;
+  console.log(requestUrl);
   let result = await fetch(requestUrl);
   let response = await result.json();
 
   // let response = data;
   const electricData = {
-    name: "Electric Price",
+    name: "Predicted Frequency",
     color: "red",
     items: response.map((e) => ({
-      value: e.price,
+      value: e.freq,
       date: new Date(e.timestamp),
     })),
   };
   const fcasData = {
-    name: "FCAS Price",
+    name: "FCAS Frequency",
     color: "#5e4fa2",
-    items: response.map((e) => ({ value: 87, date: new Date(e.timestamp) })),
+    items: response.map((e) => ({ value: 49, date: new Date(e.timestamp) })),
   };
   return [electricData, fcasData];
 };
 
 export const fetchFrequency = async (interval) => {
-  let endTime = new Date("2024-04-13 20:40:00"); // Change to get current date in production
+  let endTime = new Date("2023-11-06 20:30:00"); // Change to get current date in production
   let MS_PER_MINUTE = 60000;
   interval = parseInt(interval) * MS_PER_MINUTE; // Change from minutes to seconds
   let startTime = new Date(endTime - interval);

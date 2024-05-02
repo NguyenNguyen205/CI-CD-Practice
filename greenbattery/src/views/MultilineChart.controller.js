@@ -47,8 +47,6 @@ const useController = ({ data, width, height, chartType }) => {
         return `$${d3.format(".2")(d)}`;
       case "freq":
         return `${d3.format(".2")(d)}Hz`;
-      default:
-        return ``;
     }
   };
 
@@ -56,7 +54,7 @@ const useController = ({ data, width, height, chartType }) => {
     if (d3.timeFormat("%b")(d) === "Jan") {
       return d3.timeFormat("%Y")(d);
     }
-    return d3.timeFormat("%d %b")(d);
+    return d3.timeFormat("%H:%M")(d);
   };
   return {
     yTickFormat,

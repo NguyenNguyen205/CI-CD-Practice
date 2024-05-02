@@ -8,24 +8,28 @@ function App() {
   const [freqData, setFreqData] = useState([]);
 
   useEffect(() => {
-    fetchPrice(interval).then((val) => setPriceData([...val]));
+    fetchPrice(interval)
+      .then((val) => setPriceData([...val]))
+      .then(() => console.log(priceData));
 
-    fetchFrequency(interval).then((val) => setFreqData([...val]));
+    fetchFrequency(interval)
+      .then((val) => setFreqData([...val]))
+      .then(() => console.log(freqData));
   }, [interval]);
 
   const charts = [
     {
       id: "a",
       data: priceData,
-      chartType: "price",
-      title: "Electricity Market Price",
-    },
-    {
-      id: "b",
-      data: freqData,
       chartType: "freq",
       title: "Electricity Frequency",
     },
+    // {
+    //   id: "b",
+    //   data: freqData,
+    //   chartType: "freq",
+    //   title: "Electricity Frequency",
+    // },
   ];
   return (
     <div className="App">
@@ -40,6 +44,8 @@ function App() {
           <option value="5">5M</option>
           <option value="10">10M</option>
           <option value="25">25M</option>
+          <option value="1">1H</option>
+          <option value="2">2H</option>
         </select>
         {charts.map((chart) => (
           <MultiChart
