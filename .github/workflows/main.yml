@@ -18,6 +18,8 @@ jobs:
         run: |
           npm ci
           npm run-script build
+        env:
+          CI: ""
 
       - name: Set up AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -28,4 +30,4 @@ jobs:
       - name: Copy to s3
         run: |
           aws s3 cp ./greenbattery/build s3://testfrontendforgreenbattery --recursive
-          aws s3api get-bucket-website --bucket testfrontendforgreenbattery --output text
+          aws s3api get-bucket-website --bucket testfrontendforgreenbattery
