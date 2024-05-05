@@ -86,7 +86,15 @@ export const fetchPrice = async (interval) => {
     color: "#5e4fa2",
     items: response.map((e) => ({ value: 49, date: new Date(e.timestamp) })),
   };
-  return [electricData, fcasData];
+  const realFrequency = {
+    name: "Actual Frequency",
+    color: "#4fd1c5",
+    items: response.map((e) => ({
+      value: e.actualFreq,
+      date: new Date(e.timestamp),
+    })),
+  };
+  return [electricData, fcasData, realFrequency];
 };
 
 export const fetchFrequency = async (interval) => {
