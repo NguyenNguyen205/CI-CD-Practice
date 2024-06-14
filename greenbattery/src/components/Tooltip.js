@@ -59,7 +59,7 @@ const Tooltip = ({
       });
       tooltipContentOthers
         .select(".contentTitle")
-        .text(d3.timeFormat("%d %b %Y, %H:%M:%S")(xScale.invert(x)));
+        .text(d3.timeFormat("%d %b, %H:%M:%S")(xScale.invert(x)));
     },
     [xScale, margin, width]
   );
