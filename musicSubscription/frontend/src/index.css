@@ -1,0 +1,160 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.main-page{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: end;
+  /* background-color: grey; */
+}
+.tab-container{
+  /* background: yellow; */
+  width: 700px;
+}
+.tab-btn{
+  /* background-color: orange; */
+  background-color: white;
+  border: none;
+  margin: 20px;
+  font-size: large;
+}
+.active-tab {
+  border-bottom: 2px solid black;
+}
+
+.row{
+  /* background-color: aquamarine; */
+  height: 60px;
+  /* border: 1px solid black; */
+  margin: 10px;
+  padding: 2px;
+  /* display: flex; */
+  /* align-items: center; */
+  /* height: 20px; */
+}
+
+.search form{
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+}
+.search form > *{
+  height: 30px;
+  border-radius: 10px;
+  
+}
+.search form > input {
+  padding-left: 10px;
+}
+.search form > button {
+  width: 70px;
+  background-color: black;
+  color: white;
+  border: none;
+}
+
+
+
+.row  img{
+  border-radius: 50%;
+}
+.row > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+}
+.info > span {
+  width: 150px;
+  margin: 4px;
+  /* background-color: bisque; */
+}
+
+.remove-btn{
+  height: 30px;
+  width: 100px;
+  background-color: rgb(231, 118, 118);
+  border-radius: 10px;
+  border: none;
+}
+
+.subscribe-btn {
+  background-color: black;
+  color: white;
+  height: 30px;
+  width: 100px;
+  border-radius: 10px;
+  border: none;
+}
+
+.logout-btn{
+  background-color: rgb(168, 164, 164);
+  height: 30px;
+  width: 70px;
+  border: none ;
+  border-radius: 10px;
+}
+
+.username{
+  /* background-color: green; */
+  display: flex;
+  align-items: center;
+  font-size: x-large;
+  gap: 50px;
+}
+
+
+.login-page{
+  /* background-color: grey; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.alert{
+  color: red;
+}
+.login-register{
+  /* background-color: orange; */
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  align-items: center;
+}
+.login-register > form{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 25vw;
+  gap: 3vh;
+  /* background-color: blue; */
+}
+.login-register > form > * {
+  height: 30px;
+  width: 300px;
+  border-radius: 10px;
+  padding-left: 10px;
+}
+.login-register button {
+  background-color: black;
+  color: white;
+  border: none;
+}

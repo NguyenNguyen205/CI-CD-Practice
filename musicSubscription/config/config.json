@@ -1,0 +1,7 @@
+{
+    "API_ENDPOINT" : "Hello world",
+    "BUCKET_NAME": "Hello world",
+    "REGION": "ap-southeast-2",
+    "WEBSITE_URL": "Hello world",
+    "STACK_ID": "Hello world"
+}
