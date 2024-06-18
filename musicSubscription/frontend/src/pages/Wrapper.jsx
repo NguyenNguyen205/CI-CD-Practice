@@ -2,13 +2,14 @@ import { useState } from "react";
 import Login from "./Login";
 import Main from "./Main";
 import Register from "./Register";
+import config from "../config/config.json"
 
 const Wrapper = () => {
 
     const [currentUser, setCurrentUser] = useState([])
 
     // API endpoint
-    const endpoint = "https://db137lkjma.execute-api.us-east-1.amazonaws.com/Testing/LambdaDB"
+    const endpoint = config.API_ENDPOINT
 
     const [registered, setRegistered] = useState(true);
 

@@ -31,12 +31,21 @@ Resources:
   musicTableDynamoDB:
     TYPE: "AWS::DynamoDB::Table"
     Properties:
-      AttributeDefinitions:
+      TableName: music
 
   userTableDynamoDB:
     TYPE: "AWS::DynamoDB::Table"
     Properties:
+      TableName: login
+      KeySchema:
+        AttributeName: email
+        KeyType: HASH
       AttributeDefinitions:
+        AttributeName: email
+        AttributeType: S
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapcityUnits: 5
 
   backendAPIGateway:
 #   endpointApiPermissionProd:
