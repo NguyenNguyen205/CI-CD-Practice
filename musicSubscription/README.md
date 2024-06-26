@@ -16,4 +16,3 @@
 - Checking condition in bash script
 - Avoid using CI:"" (Refactor frontend code)
 - Automatically empty bucket
-- Update regex to be compatible with ubuntu
