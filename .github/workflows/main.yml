@@ -21,6 +21,8 @@ jobs:
         with:
           python-version: "3.10"
 
+      - run: pip install boto3
+
       - name: Set up AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
