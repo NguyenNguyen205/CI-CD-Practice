@@ -1,0 +1,7 @@
+{
+    "API_ENDPOINT" : "ENDPOINT_API",
+    "BUCKET_NAME": "music-image-bucket-hello-world",
+    "REGION": "ap-southeast-2",
+    "WEBSITE_URL": "FRONTEND_URL",
+    "STACK_ID": "musicSubscriptionDeploy"
+}
