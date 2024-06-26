@@ -44,10 +44,10 @@ echo "Installing Node.js packages..."
 cd ./musicSubscription/frontend/ && npm ci
 
 echo "Building distribution for deployment..."
-npm run-script build && cd build/
+npm run-script build
 
 echo "Copying build to S3..."
-aws s3 cp . s3://$bucket_name --recursive
+aws s3 cp ./build s3://$bucket_name --recursive
 
 cd $working_dir # Go back to the root working directory
 
