@@ -15,7 +15,7 @@ const TabsContainer = ({ names = NAMES, contents = CONTENTS }) => {
     return (
         <div className="tab-container">
             {names.map((name, index) => {
-                return <button className={ currTab == index ?"tab-btn  active-tab":"tab-btn"} key={index} onClick={() => handleSwitchTab(index)}>{name}</button>;
+                return <button className={ currTab === index ?"tab-btn  active-tab":"tab-btn"} key={index} onClick={() => handleSwitchTab(index)}>{name}</button>;
             })}
 
             {contents[currIndex]}

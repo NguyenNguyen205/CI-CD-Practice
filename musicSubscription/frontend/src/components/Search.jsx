@@ -12,7 +12,7 @@ const Search = ({addSubscription, subscribedSongs, endpoint}) => {
         let inputYear = e.target.parentElement.querySelector("#year").value.trim();
         let inputArtist = e.target.parentElement.querySelector("#artist").value.trim();
         
-        if (inputTitle == '' && inputYear == '' && inputArtist == ''){
+        if (inputTitle === '' && inputYear === '' && inputArtist === ''){
             // notify user of error
             setAlert(true);
             return ;
@@ -26,7 +26,7 @@ const Search = ({addSubscription, subscribedSongs, endpoint}) => {
         let urlString = `${url}?`;
 
         for (const [key, value] of Object.entries(obj)){
-            if (value != ''){
+            if (value !== ''){
                 urlString += `${key}=${value}&` 
             }
         }
@@ -42,7 +42,7 @@ const Search = ({addSubscription, subscribedSongs, endpoint}) => {
         const data = await response.json();
 
         const items = data;
-        if (items.length == 0){
+        if (items.length === 0){
             setAlert(true);
         }
         setMusicResult(items)

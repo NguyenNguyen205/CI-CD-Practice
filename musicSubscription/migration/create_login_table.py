@@ -1,38 +1,38 @@
 import boto3
 
 # Get the service resource.
-dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+dynamodb = boto3.resource('dynamodb', region_name='ap-southeast-2')
 
 # Create the DynamoDB table.
 
 
-# def create_login_table():
-#     login_table = dynamodb.create_table(
-#         TableName='login',
-#         KeySchema=[
-#             {
-#                 'AttributeName': 'email',
-#                 'KeyType': 'HASH'
-#             },
+def create_login_table():
+    login_table = dynamodb.create_table(
+        TableName='login',
+        KeySchema=[
+            {
+                'AttributeName': 'email',
+                'KeyType': 'HASH'
+            },
 
-#         ],
-#         AttributeDefinitions=[
-#             {
-#                 'AttributeName': 'email',
-#                 'AttributeType': 'S'
-#             },
-#         ],
-#         ProvisionedThroughput={
-#             'ReadCapacityUnits': 5,
-#             'WriteCapacityUnits': 5
-#         }
-#     )
+        ],
+        AttributeDefinitions=[
+            {
+                'AttributeName': 'email',
+                'AttributeType': 'S'
+            },
+        ],
+        ProvisionedThroughput={
+            'ReadCapacityUnits': 5,
+            'WriteCapacityUnits': 5
+        }
+    )
 
-#     # Wait until the table exists.
-#     login_table.wait_until_exists()
+    # Wait until the table exists.
+    login_table.wait_until_exists()
 
-#     # Print out some data about the table.
-#     print(login_table.item_count)
+    # Print out some data about the table.
+    print(login_table.item_count)
 
 
 def put_login_items():
@@ -50,7 +50,7 @@ def put_login_items():
 
     s = generate_pattern()
 
-    for i in range(10):
+    for i in range(3):
         table.put_item(
             Item={
                 'email': f'{sid}{i}{email_tail}',
@@ -58,7 +58,3 @@ def put_login_items():
                 'password': s[i]
             }
         )
-
-
-create_login_table()
-put_login_items()

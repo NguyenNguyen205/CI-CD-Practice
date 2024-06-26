@@ -27,7 +27,7 @@ def upload_file(file_name, bucket, object_name=None):
 def download_upload_s3():
     # No repeating artist
     artists_set = set()
-    with open('a1.json') as f:
+    with open('./musicSubscription/migration/a1.json') as f:
         dictionary = json.load(f)
         songs = dictionary['songs']
         for song in songs:
@@ -39,15 +39,13 @@ def download_upload_s3():
             pattern = ".*/(.*)\.jpg"
             author_name = (re.match(pattern=pattern, string=image_url).group(1))
 
-            with open(f'{author_name}.jpg', 'wb') as handler:
+            with open(f'./musicSubscription/migration/images/{author_name}.jpg', 'wb') as handler:
                 handler.write(img_data)
             
-            bucket_name = "s3927198-music-images"
+            bucket_name = "music-image-bucket-hello-world"
             file_name = author_name + ".jpg"
+            file_name = f"./musicSubscription/migration/images/{file_name}"
 
             if (upload_file(file_name=file_name, bucket=bucket_name)):
                 print("Upload successful")
             os.remove(file_name)
-
-if __name__ == "__main__":
-    download_upload_s3()

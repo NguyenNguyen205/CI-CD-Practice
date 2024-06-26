@@ -1,3 +1,5 @@
+import config from '../config.json'
+
 const MyMusicRow = ({ title, year, artist, removeSong }) => {
     const deleteSong = () => {
         removeSong(title);
@@ -18,7 +20,7 @@ const MyMusicRow = ({ title, year, artist, removeSong }) => {
         <div className="row">
             <div>
                 <img
-                    src={`https://s3927198-music-images.s3.amazonaws.com/${convertToFileName(artist)}.jpg`}
+                    src={`https://${config.BUCKET_NAME}.s3.amazonaws.com/${convertToFileName(artist)}.jpg`}
                     alt="artist image"
                     height={50}
                 />

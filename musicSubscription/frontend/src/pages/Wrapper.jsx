@@ -2,7 +2,7 @@ import { useState } from "react";
 import Login from "./Login";
 import Main from "./Main";
 import Register from "./Register";
-import config from "../config/config.json"
+import config from "../config.json"
 
 const Wrapper = () => {
 

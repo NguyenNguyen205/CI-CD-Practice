@@ -1,146 +1,610 @@
-# Copyright [2024] [Phil Chen]
-
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-
-#    http://www.apache.org/licenses/LICENSE-2.0
-
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-
-# Things to note or change:
-# Change your S3Bucket to the name of your bucket where you put the lambda.zip
-# Change the role name in two places from "role/serverless" to the role name you created
-# To test use the URL provided in the Outputs under TestURL in a browser
-
-AWSTemplateFormatVersion: "17-06-2024"
-Description: Serverless cloud infrastructure for Quang's MusicSubscriptionCloud (MSC) project
-
+AWSTemplateFormatVersion: "2010-09-09"
+Description:
+  Serverless cloud infrastructure for Quang's MusicSubscriptionCloud (MSC)
+  project
 Resources:
+  # Frontend static website hosting
   frontendS3Bucket:
-    TYPE: "AWS::S3::Bucket"
+    Type: AWS::S3::Bucket
     Properties:
+      BucketName: static-hosted-music-subscription
+      WebsiteConfiguration:
+        IndexDocument: index.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: False
+        BlockPublicPolicy: False
+        IgnorePublicAcls: False
+        RestrictPublicBuckets: False
 
+  BucketPolicyFE:
+    Type: "AWS::S3::BucketPolicy"
+    DependsOn: frontendS3Bucket
+    Properties:
+      Bucket: !Ref frontendS3Bucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: GetObjectforHosting
+            Action: "s3:GetObject"
+            Effect: Allow
+            Principal: "*"
+            Resource: !Sub "arn:aws:s3:::${frontendS3Bucket}/*"
+
+  # Image bucket
   imageS3Bucket:
-    TYPE: "AWS::S3::Bucket"
+    Type: AWS::S3::Bucket
     Properties:
+      BucketName: music-image-bucket-hello-world
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: False
+        BlockPublicPolicy: False
+        IgnorePublicAcls: False
+        RestrictPublicBuckets: False
 
-  musicTableDynamoDB:
-    TYPE: "AWS::DynamoDB::Table"
+  BucketPolicyImg:
+    Type: "AWS::S3::BucketPolicy"
+    DependsOn: imageS3Bucket
     Properties:
-      TableName: music
+      Bucket: !Ref imageS3Bucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: GetObjectforImages
+            Action: "s3:GetObject"
+            Effect: Allow
+            Principal: "*"
+            Resource: !Sub "arn:aws:s3:::${imageS3Bucket}/*"
 
-  userTableDynamoDB:
-    TYPE: "AWS::DynamoDB::Table"
+  ## DynamoDB
+  loginDynamoDB:
+    Type: "AWS::DynamoDB::Table"
     Properties:
       TableName: login
-      KeySchema:
-        AttributeName: email
-        KeyType: HASH
       AttributeDefinitions:
-        AttributeName: email
-        AttributeType: S
+        - AttributeName: "email"
+          AttributeType: S
+      KeySchema:
+        - AttributeName: "email"
+          KeyType: "HASH"
       ProvisionedThroughput:
         ReadCapacityUnits: 5
-        WriteCapcityUnits: 5
+        WriteCapacityUnits: 5
 
-  backendAPIGateway:
-#   endpointApiPermissionProd:
-#     Type: "AWS::Lambda::Permission"
-#     Properties:
-#       Action: "lambda:invokeFunction"
-#       Principal: apigateway.amazonaws.com
-#       FunctionName: !Ref endpoint
-#       SourceArn: !Sub
-#         - >-
-#           arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${__ApiId__}/${__Stage__}/POST/endpoint_python
-#         - __Stage__: Prod
-#           __ApiId__: !Ref ServerlessRestApi
-#   ServerlessRestApiProdStage:
-#     Type: "AWS::ApiGateway::Stage"
-#     Properties:
-#       DeploymentId: !Ref ServerlessRestApiDeployment00
-#       RestApiId: !Ref ServerlessRestApi
-#       StageName: Prod
-#   ServerlessRestApiDeployment00:
-#     Type: "AWS::ApiGateway::Deployment"
-#     Properties:
-#       RestApiId: !Ref ServerlessRestApi
-#       Description: "RestApi deployment id: 00"
-#       StageName: Stage
-#   endpoint:
-#     Type: "AWS::Lambda::Function"
-#     Properties:
-#       Code:
-#         S3Bucket: "S3_BUCKET_YOUR_APP_ZIP_IS_LOCATED"
-#         S3Key: "lambda.zip"
-#       Description: "aws-serverless-cfn-template"
-#       MemorySize: "128"
-#       Handler: lambda.endpoint
-#       Role: !Sub "arn:aws:iam::${AWS::AccountId}:role/serverless"
-#       Timeout: "30"
-#       Runtime: "python3.11"
-#   ServerlessRestApi:
-#     Type: "AWS::ApiGateway::RestApi"
-#     Properties:
-#       Body:
-#         info:
-#           version: "1.0"
-#           title: !Ref "AWS::StackName"
-#         paths:
-#           /endpoint_python:
-#             get:
-#               consumes:
-#                 - application/json
-#               produces:
-#                 - application/json
-#               responses:
-#                 "200":
-#                   description: 200 response
-#                   headers:
-#                     Content-Type:
-#                       type: string
-#               x-amazon-apigateway-integration:
-#                 httpMethod: POST
-#                 credentials: !Sub "arn:aws:iam::${AWS::AccountId}:role/serverless"
-#                 type: aws
-#                 uri: !Sub >-
-#                   arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${endpoint.Arn}/invocations
-#                 responses:
-#                   {
-#                     "default":
-#                       {
-#                         "statusCode": "200",
-#                         "responseTemplates": { application/json: "" },
-#                       },
-#                   }
-#                 passthroughBehavior: "when_no_templates"
-#         swagger: "2.0"
-#   endpointApiPermissionTest:
-#     Type: "AWS::Lambda::Permission"
-#     Properties:
-#       Action: "lambda:invokeFunction"
-#       Principal: apigateway.amazonaws.com
-#       FunctionName: !Ref endpoint
-#       SourceArn: !Sub
-#         - >-
-#           arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${__ApiId__}/${__Stage__}/POST/endpoint_python
-#         - __Stage__: "*"
-#           __ApiId__: !Ref ServerlessRestApi
-# Outputs:
-#   TestURL:
-#     Description: Test your serverless app with this url in a browser.
-#     Value:
-#       !Join [
-#         "",
-#         [
-#           "https://",
-#           !Ref "ServerlessRestApi",
-#           ".execute-api.",
-#           !Sub "${AWS::Region}",
-#           ".amazonaws.com/Prod/endpoint_python",
-#         ],
-#       ]
+  musicDynamoDB:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: music
+      AttributeDefinitions:
+        - AttributeName: "title"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "title"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  ## Lambda role to access dynamoDB
+  APIRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: "lambda.amazonaws.com"
+            Action: "sts:AssumeRole"
+      Policies:
+        - PolicyName: DynamoDBManage
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "dynamodb:Scan"
+                  - "dynamodb:Query"
+                  - "dynamodb:GetItem"
+                  - "dynamodb:PutItem"
+                  - "dynamodb:UpdateItem"
+                Resource:
+                  - !GetAtt loginDynamoDB.Arn
+                  - !GetAtt musicDynamoDB.Arn
+
+  ## Cors lambda to help validate preflight request
+  corsLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: LambdaEnablecors
+      Handler: index.lambda_handler
+      Role: !GetAtt APIRole.Arn
+      Code:
+        ZipFile: |
+          import boto3
+          from boto3.dynamodb.conditions import Key, Attr
+          import json
+
+          def lambda_handler(event, context):
+              return {
+                "statusCode": 200,
+                "headers": {
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+                },
+                "body": "hello world"
+              }
+
+      Runtime: python3.12
+      Timeout: 500
+
+  ## Post Lambda function:
+  musicSubscriptionLambdaPost:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: LambdaMusicSubscriptionPost
+      Handler: index.lambda_handler
+      Role: !GetAtt APIRole.Arn
+      Code:
+        ZipFile: |
+          import boto3
+          from boto3.dynamodb.conditions import Key, Attr
+          import json
+
+          dynamodb = boto3.resource('dynamodb', region_name='ap-southeast-2')
+
+          def remove_song(input_email, input_title):
+              try:
+                  table = dynamodb.Table('login')
+
+                  response = table.get_item(
+                      Key={
+                          'email': input_email
+                      }
+                  )
+                  item = response['Item']
+                  
+                  curr = item['subscribed']
+              
+                  curr.remove(input_title)
+                  if len(curr) == 0:
+                      table.update_item(
+                          Key={
+                              'email': input_email
+                          },
+                          UpdateExpression='REMOVE subscribed',
+                      )
+                  else:
+                      table.update_item(
+                          Key={
+                              'email': input_email
+                          },
+                          UpdateExpression='SET subscribed = :val1',
+                          ExpressionAttributeValues={
+                              ':val1': curr
+                          }
+                      )
+                  
+                  return True
+                  
+              except Exception as e:
+                  return str(e)
+
+
+          def check_register_details(input_email, input_user_name, input_password):
+              login_table = dynamodb.Table('login')
+
+              response = login_table.get_item(
+                  Key={
+                      'email': input_email,
+                  
+                  }
+              )
+              if 'Item' not in response.keys():
+                  # put item in db
+                  login_table.put_item(Item={
+                      'email': input_email,
+                      'user_name': input_user_name,
+                      'password': input_password
+                  })
+                  return True
+              else:
+                  # notify user of identical
+                  return False
+              
+          def check_login_details(input_email, input_password):
+              try:
+                  login_table = dynamodb.Table('login')
+                  response = login_table.get_item(
+                      Key={
+                          'email': input_email,
+                      }
+                  )
+                  item = response['Item']
+                  if item['password'] == input_password:
+                      return [item['email'], item['user_name']]
+                  return False
+              except Exception as e:
+                  print(e)
+              
+          def subscribe(user_email, song):
+              
+              try: 
+                  table = dynamodb.Table('login')
+
+                  response = table.get_item(
+                      Key={
+                          'email': user_email
+                      }
+                  )
+                  item = response['Item']
+
+
+                  if 'subscribed' not in item:
+                      print("no songs")
+
+                      table.update_item(
+                          Key={
+                              'email': user_email
+                          },
+                          UpdateExpression='SET subscribed = :val1',
+                          ExpressionAttributeValues={
+                              ':val1': {song}
+                          }
+                      )
+                  else:
+                      curr = item['subscribed']
+                      curr.add(song)
+                      table.update_item(
+                          Key={
+                              'email': user_email
+                          },
+                          UpdateExpression='SET subscribed = :val1',
+                          ExpressionAttributeValues={
+                          ':val1': curr
+                          }
+                      )
+                  new_response = table.get_item(
+                      Key={
+                          'email': user_email
+                      }
+                  )
+                  new_item = new_response['Item']
+                  return list(new_item['subscribed'])
+              except Exception as e:
+                  return str(e)
+                  
+
+
+          def lambda_handler(event, context):
+              body = ""
+              if (event['body']) and (event['body'] is not None):
+                  body = json.loads(event['body'])
+              
+              action = body['action']
+              status = "failed"
+
+              response_format = {
+                  'statusCode': 200,
+                  'headers':  {
+                          'Access-Control-Allow-Headers': 'Content-Type',
+                          'Access-Control-Allow-Origin': '*',
+                          'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+                  }
+              }
+
+              if action == 'register':
+                  email = body['email']
+                  username = body['username']
+                  password = body['password']
+
+                  if check_register_details(email, username, password):
+                      status = "\"success\""
+                  else: 
+                      status = "\"failed\""
+                  response_format['body'] = status
+                  return response_format
+              
+              elif action == 'login': 
+                  email = body['email']
+                  password = body['password']
+                  if check_login_details(email, password):
+                      response_format["body"] = json.dumps(check_login_details(email, password))
+                      return response_format
+                  response_format['body'] = "\"failed\""
+                  return response_format
+              
+              elif action == 'subscribe':
+                  email = body['email']
+                  song = body['title']
+
+                  if subscribe(email, song):
+                      response_format['body'] = json.dumps(subscribe(email, song))
+                      return response_format
+                  else:
+                      response_format['body'] = "false"
+                      return response_format
+              elif action == 'remove':
+                  email = body['email']
+                  song = body['title']
+                  response_format['body'] = json.dumps(remove_song(email, song))
+                  return response_format
+
+      Runtime: python3.12
+      Timeout: 600
+
+  ## Get Lambda function:
+  musicSubscriptionLambdaGet:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: LambdaMusicSubscriptionGet
+      Handler: index.lambda_handler
+      Role: !GetAtt APIRole.Arn
+      Code:
+        ZipFile: |
+          import boto3
+          import json
+          from boto3.dynamodb.conditions import Key, Attr
+
+          dynamodb = boto3.resource('dynamodb', region_name='ap-southeast-2')
+
+          def search_music(input_title=None, input_year=None, input_artist=None):
+
+              table = dynamodb.Table('music')
+
+
+              if input_title.strip() != '':
+
+                  if input_year.strip() != '' and input_artist.strip() != '':
+
+                      response = table.scan(
+                          FilterExpression=Attr('year').eq(input_year) & Attr('artist').eq(input_artist) & Key('title').eq(input_title)
+                      )
+                  elif input_year.strip() != '':
+
+                      response = table.scan(
+                          FilterExpression=Attr('year').eq(input_year) & Key('title').eq(input_title)
+                      )
+                  elif input_artist.strip() != '':
+
+                      response = table.scan(
+                          FilterExpression=Attr('artist').eq(input_artist) & Key('title').eq(input_title)
+                      )
+                  else:
+
+                      response = table.scan(
+                          FilterExpression=Key('title').eq(input_title)
+                      )
+              elif input_year.strip() != '':
+
+                  if input_artist.strip() != '':
+
+                      response = table.scan(
+                          FilterExpression=Attr('year').eq(input_year) & Attr('artist').eq(input_artist)
+                      )
+                  else:
+
+                      response = table.scan(
+                          FilterExpression=Attr('year').eq(input_year)
+                      )
+              elif input_artist.strip() != '':
+                  response = table.scan(
+                      FilterExpression=Attr('artist').eq(input_artist)
+                  )
+              else:
+
+                  print("Please provide at least one input parameter.")
+                  response = None
+
+              if response:
+                  items = response['Items']
+                  return items
+
+              return []
+
+          def lambda_handler(event, context):
+              # body = ""
+              # if (event['body']) and (event['body'] is not None):
+              #     body = json.loads(event['body'])
+              
+              # action = body['action']
+              # status = "failed"
+              queryStringParams = event['queryStringParameters']
+              response_format = {
+                  'statusCode': 200,
+                  'headers':  {
+                          'Access-Control-Allow-Headers': 'Content-Type',
+                          'Access-Control-Allow-Origin': '*',
+                          'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+                  }
+              }
+              if queryStringParams is None:
+                  response_format['body'] = "\"No queries\""
+                  return response_format
+
+              if 'email' in queryStringParams:
+                  email = queryStringParams['email']
+                  table = dynamodb.Table('login')
+                  response = table.get_item(
+                      Key={
+                          'email': email
+                      }
+                  )
+                  item = response['Item']
+                  if 'subscribed' not in item:
+                      response_format['body'] = json.dumps([])
+                      return response_format
+                  response_format['body'] = json.dumps(list(item['subscribed']))
+                  return response_format
+              else:
+                  try:
+                      artist = queryStringParams['artist']
+                  except KeyError:
+                      artist = ''
+                  try:
+                      title = queryStringParams['title']
+                  except KeyError:
+                      title = ''
+                  try:
+                      year = queryStringParams['year']
+                  except KeyError:
+                      year = ''
+                  res_items = search_music(title, year, artist)
+                  response_format['body'] = json.dumps(res_items)
+                  return response_format
+      Runtime: python3.12
+      Timeout: 600
+
+  ## Rest API
+  DynamoDBAPI:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: API-Gateway-Music-Subscription
+
+  # Rest API music resources
+  DynamoDBAPIResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref DynamoDBAPI
+      ParentId: !GetAtt DynamoDBAPI.RootResourceId
+      PathPart: "music"
+
+  ## Rest API role to access lambda
+  DynamoDBAPIRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service: "apigateway.amazonaws.com"
+            Action: "sts:AssumeRole"
+      Policies:
+        - PolicyName: "DynamoDBAPIPolicy"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "lambda:InvokeFunction"
+                Resource:
+                  - !GetAtt musicSubscriptionLambdaPost.Arn
+                  - !GetAtt musicSubscriptionLambdaGet.Arn
+                  - !GetAtt corsLambda.Arn
+
+  ## POST method
+  DynamoDBAPIMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref DynamoDBAPI
+      ResourceId: !Ref DynamoDBAPIResource
+      HttpMethod: POST
+      AuthorizationType: "NONE"
+      Integration:
+        Type: AWS_PROXY
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${musicSubscriptionLambdaPost.Arn}/invocations"
+        Credentials: !GetAtt DynamoDBAPIRole.Arn
+        IntegrationHttpMethod: "POST"
+        RequestParameters:
+          "integration.request.header.Content-Type": "'application/x-www-form-urlencoded'"
+        RequestTemplates:
+          "application/json": !Sub |
+            Action=SendMessage&MessageBody=$util.urlEncode("$input.body")
+
+      MethodResponses:
+        - StatusCode: 200
+          ResponseModels:
+            application/json: "Empty"
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Credentials: true
+
+  ## Options Method
+  corsAPIMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref DynamoDBAPI
+      ResourceId: !Ref DynamoDBAPIResource
+      HttpMethod: OPTIONS
+      AuthorizationType: "NONE"
+      Integration:
+        Type: AWS_PROXY
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${corsLambda.Arn}/invocations"
+        Credentials: !GetAtt DynamoDBAPIRole.Arn
+        IntegrationHttpMethod: "POST"
+        RequestParameters:
+          "integration.request.header.Content-Type": "'application/x-www-form-urlencoded'"
+        RequestTemplates:
+          "application/json": !Sub |
+            Action=SendMessage&MessageBody=$util.urlEncode("$input.body")
+      MethodResponses:
+        - StatusCode: 200
+          ResponseModels:
+            application/json: "Empty"
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Credentials: true
+
+  ## Get Method
+  DynamoDBAPIMethodGet:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref DynamoDBAPI
+      ResourceId: !Ref DynamoDBAPIResource
+      HttpMethod: GET
+      AuthorizationType: "NONE"
+      Integration:
+        Type: AWS_PROXY
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${musicSubscriptionLambdaGet.Arn}/invocations"
+        Credentials: !GetAtt DynamoDBAPIRole.Arn
+        IntegrationHttpMethod: "POST"
+        RequestParameters:
+          "integration.request.header.Content-Type": "'application/x-www-form-urlencoded'"
+        RequestTemplates:
+          "application/json": !Sub |
+            Action=SendMessage&MessageBody=$util.urlEncode("$input.body")
+
+      MethodResponses:
+        - StatusCode: 200
+          ResponseModels:
+            application/json: "Empty"
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Credentials: true
+
+  ## Deployment
+  DynamoDBAPIDeployment:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId: !Ref DynamoDBAPI
+    DependsOn:
+      - DynamoDBAPIMethod
+      - corsAPIMethod
+      - DynamoDBAPIMethodGet
+
+  ## Prod Stage
+  DynamoDBAPIStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      StageName: "Prod"
+      RestApiId: !Ref DynamoDBAPI
+      DeploymentId: !Ref DynamoDBAPIDeployment
+
+Outputs:
+  WebsiteURL:
+    Value:
+      Fn::GetAtt:
+        - frontendS3Bucket
+        - WebsiteURL
+    Description: URL of website hosted on S3
+
+  DynamoDBAPIInvokeURL:
+    Description: "URL for API"
+    Value: !Sub "https://${DynamoDBAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod/music"

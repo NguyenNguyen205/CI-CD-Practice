@@ -19,14 +19,14 @@ const Login = ({loginTrigger, endpoint}) => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-            },
-            body: JSON.stringify(loginObj),
-        });
+                },
+            body: JSON.stringify(loginObj)
+            });
 
         const data = await response.json();
         console.log(data)
 
-        if (data != 'failed'){
+        if (data !== 'failed'){
             loginTrigger(data)
         }else {
             setAlert(true)

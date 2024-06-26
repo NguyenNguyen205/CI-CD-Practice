@@ -2,50 +2,50 @@ import boto3
 import json
 
 # Get the service resource.
-dynamodb = boto3.resource('dynamodb', region_name='us-east-1')
+dynamodb = boto3.resource('dynamodb', region_name='ap-southeast-2')
 
 # Create the DynamoDB table.
 
 
-# def create_music_table():
-#     login_table = dynamodb.create_table(
-#         TableName='music',
-#         KeySchema=[
-#             {
-#                 'AttributeName': 'title',
-#                 'KeyType': 'HASH'
-#             },
-#             # {
-#             #     'AttributeName': 'year',
-#             #     'KeyType': 'RANGE'
-#             # }
-#         ],
-#         AttributeDefinitions=[
-#             {
-#                 'AttributeName': 'title',
-#                 'AttributeType': 'S'
-#             },
-#             # {
-#             #     'AttributeName': 'year',
-#             #     'AttributeType': 'S'
-#             # }
-#         ],
-#         ProvisionedThroughput={
-#             'ReadCapacityUnits': 10,
-#             'WriteCapacityUnits': 10
-#         }
-#     )
+def create_music_table():
+    login_table = dynamodb.create_table(
+        TableName='music',
+        KeySchema=[
+            {
+                'AttributeName': 'title',
+                'KeyType': 'HASH'
+            },
+            # {
+            #     'AttributeName': 'year',
+            #     'KeyType': 'RANGE'
+            # }
+        ],
+        AttributeDefinitions=[
+            {
+                'AttributeName': 'title',
+                'AttributeType': 'S'
+            },
+            # {
+            #     'AttributeName': 'year',
+            #     'AttributeType': 'S'
+            # }
+        ],
+        ProvisionedThroughput={
+            'ReadCapacityUnits': 10,
+            'WriteCapacityUnits': 10
+        }
+    )
 
-#     # Wait until the table exists.
-#     login_table.wait_until_exists()
+    # Wait until the table exists.
+    login_table.wait_until_exists()
 
-#     # Print out some data about the table.
-#     print(login_table.item_count)
+    # Print out some data about the table.
+    print(login_table.item_count)
 
 
 def load_music_items():
     table = dynamodb.Table('music')
-    with open('a1.json') as f:
+    with open('./musicSubscription/migration/a1.json') as f:
         songs = json.load(f)['songs']
         count = 0
 
@@ -61,5 +61,3 @@ def load_music_items():
                 }
             )
     print("count ", count)
-create_music_table()
-load_music_items()

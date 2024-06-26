@@ -1,3 +1,5 @@
+import config from '../config.json'
+
 const MusicRow = ({ title, year, artist, addSubscription, subscribed }) => {
     const handleSubscribe = () => {
         addSubscription(title);
@@ -10,7 +12,7 @@ const MusicRow = ({ title, year, artist, addSubscription, subscribed }) => {
         let words = artist.split(' ')
         for (let i = 0; i < words.length; i ++){
             words[i] = capitalizeFirstLetter(words[i])
-        }
+        } 
         return words.join('')
     }
 
@@ -18,8 +20,9 @@ const MusicRow = ({ title, year, artist, addSubscription, subscribed }) => {
         <div className="row">
             <div>
                 <img
-                    src={`https://s3927198-music-images.s3.amazonaws.com/${convertToFileName(artist)}.jpg`}
+                    src={`https://${config['BUCKET_NAME']}.s3.amazonaws.com/${convertToFileName(artist)}.jpg`}
                     height={50}
+                    alt='Helloworld'
                 />
 
                 <span className="info">

@@ -21,6 +21,7 @@ const MyMusic = ({subscribedSongs, endpoint, removeSong}) => {
 
                 songs.push(data[0])
             }
+            // console.log(myMusicSongs);
 
             setMyMusicSongs(songs)
         }

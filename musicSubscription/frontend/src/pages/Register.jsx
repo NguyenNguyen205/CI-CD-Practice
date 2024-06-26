@@ -34,7 +34,7 @@ const Register = ({switchToLogin, endpoint}) => {
             setAlert(true)
         }
 
-        console.log(data)
+        // console.log(data)
     }
 
     const [alert, setAlert] = useState(false);
